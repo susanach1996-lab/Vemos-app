@@ -8,8 +8,8 @@ interface Producto {
   costo: number;
   precio_venta: number;
   stock_actual: number;
+  imagen_url?: string;
 }
-
 
 interface ItemCarrito extends Producto {
   cantidadCarrito: number;
@@ -32,7 +32,7 @@ interface Venta {
 
 export default function App() {
   const [pestana, setPestana] = useState<
-    'pos' | 'inventario' | 'clientes' | 'caja'
+    'pos' | 'inventario' | 'clientes' | 'catalogo' |'caja'
   >('pos');
   const [productos, setProductos] = useState<Producto[]>([]);
   const [clientes, setClientes] = useState<Cliente[]>([]);
@@ -65,6 +65,7 @@ export default function App() {
   const [costo, setCosto] = useState('');
   const [precioVenta, setPrecioVenta] = useState('');
   const [stock, setStock] = useState('');
+  const [imagenUrl, setImagenUrl] = useState('');
 
   // Abonos
   const [clienteAbono, setClienteAbono] = useState<Cliente | null>(null);
@@ -139,7 +140,33 @@ export default function App() {
       console.error('Error cargando ventas:', err.message);
     }
   };
-
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    try {
+      const file = e.target.files?.[0];
+      if (!file) return;
+  
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Date.now()}.${fileExt}`;
+      const filePath = `${fileName}`;
+  
+      const { error: uploadError } = await supabase.storage
+        .from('Productos')
+        .upload(filePath, file);
+  
+      if (uploadError) throw uploadError;
+  
+      const { data } = supabase.storage
+        .from('Productos')
+        .getPublicUrl(filePath);
+  
+        setImagenUrl(data.publicUrl);
+      
+      alert("¡Foto cargada con éxito!");
+    } catch (error: any) {
+      console.error("Error al subir la imagen: ", error.message);
+      alert("Error al subir la foto.");
+    }
+  };
   const guardarProducto = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!nombre || !precioVenta) {
@@ -155,6 +182,7 @@ export default function App() {
         costo: parseFloat(costo) || 0,
         precio_venta: parseFloat(precioVenta),
         stock_actual: parseInt(stock) || 0,
+        imagen_url: imagenUrl,
       };
 
       const { error } = await supabase
@@ -168,6 +196,7 @@ export default function App() {
       setCosto('');
       setPrecioVenta('');
       setStock('');
+      setImagenUrl('');
       obtenerProductos();
     } catch (err: any) {
       alert('Error al guardar: ' + err.message);
@@ -430,8 +459,8 @@ export default function App() {
         </div>
       </div>
 
-      {/* Navegación (4 pestañas) */}
-      <div className="grid grid-cols-4 gap-1 mb-3">
+      {/* Navegación (5 pestañas) */}
+      <div className="grid grid-cols-5 gap-1 mb-3">
         <button
           onClick={() => setPestana('pos')}
           className={`py-2 text-[11px] font-bold rounded-lg border ${
@@ -442,6 +471,16 @@ export default function App() {
         >
           🛒 Vender
         </button>
+        <button
+  onClick={() => setPestana('catalogo')}
+  className={`py-2 text-[11px] font-medium rounded-lg shadow-sm transition ${
+    pestana === 'catalogo'
+      ? 'bg-purple-600 text-white'
+      : 'bg-white text-slate-600'
+  }`}
+>
+  🛍️ Catálogo
+</button>
         <button
           onClick={() => setPestana('inventario')}
           className={`py-2 text-[11px] font-bold rounded-lg border ${
@@ -737,6 +776,59 @@ export default function App() {
         </div>
       )}
 
+{pestana === 'catalogo' && (
+  <div className="max-w-4xl mx-auto p-4 space-y-6 pb-24">
+    <div className="bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl p-6 text-white text-center shadow-lg">
+      <h1 className="text-2xl font-bold">Acuarela Kids - Catálogo</h1>
+      <p className="text-sm opacity-90 mt-1">Elige tus prendas favoritas y pídelas al instante por WhatsApp</p>
+      
+      <button
+        onClick={() => {
+          navigator.clipboard.writeText(window.location.href);
+          alert("¡Enlace del catálogo copiado! Ya puedes pegarlo en WhatsApp.");
+        }}
+        className="mt-4 bg-white text-purple-700 font-semibold px-4 py-2 rounded-lg shadow text-xs mx-auto"
+      >
+        🔗 Copiar enlace para compartir
+      </button>
+    </div>
+
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+      {productos.map((p) => (
+        <div key={p.id} className="bg-white border rounded-2xl shadow-sm overflow-hidden flex flex-col justify-between">
+          <div>
+            {p.imagen_url ? (
+              <img src={p.imagen_url} alt={p.nombre} className="w-full h-48 object-cover" />
+            ) : (
+              <div className="w-full h-48 bg-slate-100 flex items-center justify-center text-slate-400 text-xs">Sin imagen</div>
+            )}
+            <div className="p-4 space-y-1">
+              <h3 className="font-bold text-slate-800 text-base">{p.nombre}</h3>
+              {p.talla && (
+                <span className="inline-block bg-purple-50 text-purple-700 text-xs px-2 py-0.5 rounded-md font-medium">
+                  Talla: {p.talla}
+                </span>
+              )}
+              <p className="text-lg font-extrabold text-slate-900 mt-2">${p.precio_venta}</p>
+            </div>
+          </div>
+
+          <div className="p-4 pt-0">
+            <a
+              href={`https://wa.me/?text=${encodeURIComponent(`¡Hola! Me interesa este producto del catálogo: *${p.nombre}* (Talla: ${p.talla || 'Única'}) - Precio: $${p.precio_venta}`)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-medium py-2 px-3 rounded-xl text-center text-xs flex items-center justify-center gap-2"
+            >
+              💬 Pedir por WhatsApp
+            </a>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+)}
+
       {/* SECCIÓN INVENTARIO / STOCK */}
       {pestana === 'inventario' && (
         <div className="space-y-3">
@@ -745,6 +837,15 @@ export default function App() {
               ➕ Nuevo Producto
             </h2>
             <form onSubmit={guardarProducto} className="space-y-2">
+            <div style={{ marginBottom: '1rem' }}>
+  <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '14px' }}>Foto del Producto</label>
+  <input 
+    type="file" 
+    accept="image/*" 
+    onChange={handleImageUpload} 
+    style={{ width: '100%', padding: '0.5rem', border: '1px solid #d1d5db', borderRadius: '4px', background: '#fff' }}
+  />
+</div>
               <input
                 type="text"
                 placeholder="Prenda (ej. Conjunto Short) *"
@@ -839,13 +940,30 @@ export default function App() {
                   <div
                     key={p.id}
                     className="p-2.5 border rounded-lg bg-slate-50 flex justify-between items-center"
-                  >
+                  > {p.imagen_url && (
+                    <img 
+                      src={p.imagen_url} 
+                      alt={p.nombre} 
+                      className="w-12 h-12 object-cover rounded-md mb-2" 
+                    />
+                  )}
                     <div>
                       <p className="text-xs font-bold text-slate-800">
                         {p.nombre}{' '}
                         {p.talla && (
                           <span className="text-[9px] bg-purple-100 text-purple-700 px-1 py-0.5 rounded font-semibold ml-1">
                             Talla: {p.talla}
+                            <button 
+  onClick={async () => {
+    if (confirm('¿Seguro que deseas eliminar este producto?')) {
+      await supabase.from('productos').delete().eq('id', p.id);
+      obtenerProductos();
+    }
+  }}
+  style={{ background: '#ef4444', color: '#fff', border: 'none', padding: '0.25rem 0.5rem', borderRadius: '4px', fontSize: '11px', cursor: 'pointer', marginTop: '0.5rem' }}
+>
+  Eliminar
+</button>
                           </span>
                         )}
                       </p>
