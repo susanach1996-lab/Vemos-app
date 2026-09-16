@@ -444,7 +444,7 @@ export default function App() {
           🔄 Actualizar
         </button>
       </header>
-
+{pestana !== 'catalogo' && (
       {/* BARRA TASA BCV */}
       <div className="bg-white p-2.5 rounded-xl border border-purple-200 shadow-sm mb-3 flex justify-between items-center text-xs">
         <div className="flex items-center gap-1.5">
@@ -467,7 +467,7 @@ export default function App() {
           <span className="text-[10px] text-slate-400">Manual</span>
         </div>
       </div>
-
+)}
       {/* Navegación (5 pestañas) */}
       <div className="grid grid-cols-5 gap-1 mb-3">
         <button
