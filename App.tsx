@@ -457,7 +457,7 @@ export default function App() {
             1 USD = Bs. {tasaBcv.toFixed(2)}
           </span>
       </div>
-)}
+
         <div className="flex items-center gap-1">
           <input
             type="number"
