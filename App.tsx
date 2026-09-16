@@ -34,6 +34,15 @@ export default function App() {
   const [pestana, setPestana] = useState<
     'pos' | 'inventario' | 'clientes' | 'catalogo' |'caja'
   >('pos');
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const vista = params.get('view');
+    if (vista) {
+      setPestana(vista);
+    } else if (window.location.hash.includes('catalogo')) {
+      setPestana('catalogo');
+    }
+  }, []);
   const [productos, setProductos] = useState<Producto[]>([]);
   const [clientes, setClientes] = useState<Cliente[]>([]);
   const [ventas, setVentas] = useState<Venta[]>([]);
