@@ -523,7 +523,6 @@ export default function App() {
           📊 Caja
         </button>
       </div>
-  )}
 
       {/* SECCIÓN POS */}
       {pestana === 'pos' && (
