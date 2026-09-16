@@ -456,7 +456,6 @@ export default function App() {
           <span className="font-extrabold text-slate-800">
             1 USD = Bs. {tasaBcv.toFixed(2)}
           </span>
-        </div>
       </div>
 )}
         <div className="flex items-center gap-1">
