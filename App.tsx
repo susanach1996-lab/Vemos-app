@@ -10,6 +10,7 @@ interface Producto {
   stock_actual: number;
 }
 
+
 interface ItemCarrito extends Producto {
   cantidadCarrito: number;
 }
