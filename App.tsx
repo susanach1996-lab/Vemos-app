@@ -445,8 +445,8 @@ export default function App() {
         </button>
       </header>
 {pestana !== 'catalogo' && (
+  <div className="bg-white p-2.5 rounded-xl border border-purple-200 shadow-sm mb-3 flex justify-between items-center text-xs">
       {/* BARRA TASA BCV */}
-      <div className="bg-white p-2.5 rounded-xl border border-purple-200 shadow-sm mb-3 flex justify-between items-center text-xs">
         <div className="flex items-center gap-1.5">
           <span className="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-md font-bold text-[10px]">
             BCV Hoy
