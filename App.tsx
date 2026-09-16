@@ -525,27 +525,27 @@ export default function App() {
       </div>
 
       {/* SECCIÓN POS */}
-      {pestana === 'pos' && (
-        <div className="space-y-3">
-          <section className="bg-white p-3.5 rounded-xl shadow-sm border border-purple-200">
-            <h2 className="text-xs font-bold text-slate-700 mb-2 flex justify-between items-center">
-              <span>🛍️ Carrito</span>
-              <span className="text-[10px] bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full font-bold">
-                {carrito.reduce((s, i) => s + i.cantidadCarrito, 0)} prendas
-              </span>
-            </h2>
-
-            {carrito.length === 0 ? (
-              <p className="text-xs text-slate-400 text-center py-4">
-                Toca una prenda abajo para agregarla.
-              </p>
-            ) : (
-              <div className="space-y-1.5 mb-2 max-h-40 overflow-y-auto">
-                {carrito.map((item) => (
-                  <div
-                    key={item.id}
-                    className="flex justify-between items-center p-2 bg-slate-50 rounded-lg border border-slate-100"
-                  >
+      return (
+  <div className="min-h-screen bg-slate-100 p-3 font-sans max-w-md mx-auto pb-10">
+    {pestana !== 'catalogo' && (
+      <header className="bg-purple-600 text-white p-3 rounded-xl shadow-md mb-2 flex justify-between items-center">
+        <div>
+          <h1 className="text-xl font-bold tracking-wide">vemos</h1>
+          <p className="text-[10px] text-purple-200">Acuarela Kids - POS</p>
+        </div>
+        <button
+          onClick={() => {
+            obtenerProductos();
+            obtenerClientes();
+            obtenerVentas();
+            obtenerTasaBCV();
+          }}
+          className="text-xs bg-purple-700 hover:bg-purple-800 px-2.5 py-1 rounded-lg border border-purple-400"
+        >
+          🔄 Actualizar
+        </button>
+      </header>
+    )}
                     <div>
                       <p className="text-xs font-bold text-slate-800">
                         {item.nombre}
