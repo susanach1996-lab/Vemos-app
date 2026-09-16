@@ -469,9 +469,8 @@ export default function App() {
           <span className="text-[10px] text-slate-400">Manual</span>
         </div>
       </div>
-)}
       {/* Navegación (5 pestañas) */}
-      {pestana !== 'catalogo' && (
+  {pestana !== 'catalogo' && (
   <div className="grid grid-cols-5 gap-1 mb-3">
         <button
           onClick={() => setPestana('pos')}
@@ -524,6 +523,7 @@ export default function App() {
           📊 Caja
         </button>
       </div>
+  )}
 
       {/* SECCIÓN POS */}
       {pestana === 'pos' && (
