@@ -427,6 +427,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-slate-100 p-3 font-sans max-w-md mx-auto pb-10">
+      {pestana !== 'catalogo' && (
       <header className="bg-purple-600 text-white p-3 rounded-xl shadow-md mb-2 flex justify-between items-center">
         <div>
           <h1 className="text-xl font-bold tracking-wide">vemos</h1>
@@ -444,6 +445,7 @@ export default function App() {
           🔄 Actualizar
         </button>
       </header>
+      )}
 {pestana !== 'catalogo' && (
   <div className="bg-white p-2.5 rounded-xl border border-purple-200 shadow-sm mb-3 flex justify-between items-center text-xs">
       {/* BARRA TASA BCV */}
