@@ -471,7 +471,8 @@ export default function App() {
       </div>
 )}
       {/* Navegación (5 pestañas) */}
-      <div className="grid grid-cols-5 gap-1 mb-3">
+      {pestana !== 'catalogo' && (
+  <div className="grid grid-cols-5 gap-1 mb-3">
         <button
           onClick={() => setPestana('pos')}
           className={`py-2 text-[11px] font-bold rounded-lg border ${
